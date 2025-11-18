@@ -5,10 +5,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Calendar, Clock, QrCode, Bell, User, LogOut, Plus, MapPin } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { TokenQRCode } from "@/components/TokenQRCode";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [currentQueue] = useState({ position: 12, estimatedTime: 25, token: "A-142" });
+  const [showQRDialog, setShowQRDialog] = useState(false);
 
   const upcomingAppointments = [
     { id: 1, service: "General Checkup", provider: "City Medical Center", date: "Today, 3:00 PM", status: "confirmed" },
@@ -91,7 +94,10 @@ const UserDashboard = () => {
                     <MapPin className="w-4 h-4 mr-2" />
                     View Location
                   </Button>
-                  <Button className="flex-1 rounded-xl gradient-hero text-white">
+                  <Button 
+                    className="flex-1 rounded-xl gradient-hero text-white"
+                    onClick={() => setShowQRDialog(true)}
+                  >
                     <QrCode className="w-4 h-4 mr-2" />
                     Show QR Code
                   </Button>
@@ -204,6 +210,24 @@ const UserDashboard = () => {
           </div>
         </div>
       </main>
+
+      {/* QR Code Dialog */}
+      <Dialog open={showQRDialog} onOpenChange={setShowQRDialog}>
+        <DialogContent className="sm:max-w-md rounded-3xl">
+          <DialogHeader>
+            <DialogTitle>Your Queue Token</DialogTitle>
+            <DialogDescription>
+              Show this QR code at the counter for quick check-in
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center py-6">
+            <TokenQRCode 
+              token={currentQueue.token}
+              appointmentId="apt-123"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -1,12 +1,17 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Users, Clock, TrendingUp, Bell, Settings, LogOut, Play, Pause, SkipForward } from "lucide-react";
+import { Sparkles, Users, Clock, TrendingUp, Bell, Settings, LogOut, Play, Pause, SkipForward, ScanLine } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { QRScanner } from "@/components/QRScanner";
+import { toast } from "sonner";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
+  const [showScanner, setShowScanner] = useState(false);
 
   const stats = [
     { label: "Tokens Served", value: "47", change: "+12%", icon: Users, color: "text-primary" },
@@ -21,6 +26,25 @@ const ProviderDashboard = () => {
     { token: "A-145", name: "Sarah Williams", service: "General Checkup", status: "waiting", waitTime: "18m" },
     { token: "A-146", name: "Robert Brown", service: "Consultation", status: "waiting", waitTime: "25m" },
   ];
+
+  const handleScanSuccess = (data: {
+    token: string;
+    appointmentId?: string | null;
+    timestamp: number;
+  }) => {
+    const queueItem = queueList.find(item => item.token === data.token);
+    
+    if (queueItem) {
+      toast.success(`✅ Token ${data.token} verified - ${queueItem.name}`, {
+        description: `Service: ${queueItem.service}`,
+      });
+      setShowScanner(false);
+    } else {
+      toast.error(`Token ${data.token} not found in queue`, {
+        description: "Please verify the token number",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted to-secondary/5">
@@ -97,6 +121,14 @@ const ProviderDashboard = () => {
                     <CardDescription>Manage your current queue</CardDescription>
                   </div>
                   <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      className="rounded-xl gradient-hero text-white"
+                      onClick={() => setShowScanner(true)}
+                    >
+                      <ScanLine className="w-4 h-4 mr-2" />
+                      Scan QR
+                    </Button>
                     <Button size="sm" variant="outline" className="rounded-xl">
                       <Pause className="w-4 h-4 mr-2" />
                       Pause
@@ -221,6 +253,16 @@ const ProviderDashboard = () => {
           </div>
         </div>
       </main>
+
+      {/* QR Scanner Dialog */}
+      <Dialog open={showScanner} onOpenChange={setShowScanner}>
+        <DialogContent className="sm:max-w-lg rounded-3xl">
+          <QRScanner 
+            onScanSuccess={handleScanSuccess}
+            onClose={() => setShowScanner(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
