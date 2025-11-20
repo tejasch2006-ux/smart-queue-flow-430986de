@@ -39,10 +39,18 @@ const UserDashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" className="rounded-full">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full"
+                onClick={() => navigate("/user/notifications")}
+              >
                 <Bell className="w-5 h-5" />
               </Button>
-              <Avatar className="cursor-pointer">
+              <Avatar 
+                className="cursor-pointer"
+                onClick={() => navigate("/user/profile")}
+              >
                 <AvatarFallback className="gradient-hero text-white font-semibold">
                   JD
                 </AvatarFallback>
@@ -50,7 +58,7 @@ const UserDashboard = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/user/settings")}
                 className="rounded-full"
               >
                 <LogOut className="w-5 h-5" />
@@ -90,10 +98,14 @@ const UserDashboard = () => {
               </div>
               <CardContent className="p-6">
                 <div className="flex gap-3">
-                  <Button className="flex-1 rounded-xl" variant="outline">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    View Location
-                  </Button>
+                <Button 
+                  className="flex-1 rounded-xl" 
+                  variant="outline"
+                  onClick={() => navigate("/user/location", { state: currentQueue })}
+                >
+                  <MapPin className="w-4 h-4 mr-2" />
+                  View Location
+                </Button>
                   <Button 
                     className="flex-1 rounded-xl gradient-hero text-white"
                     onClick={() => setShowQRDialog(true)}
@@ -169,6 +181,7 @@ const UserDashboard = () => {
                   Book Appointment
                 </Button>
                 <Button
+                  onClick={() => navigate("/user/join-queue")}
                   variant="outline"
                   className="w-full rounded-xl justify-start"
                 >
@@ -176,6 +189,7 @@ const UserDashboard = () => {
                   Join Queue
                 </Button>
                 <Button
+                  onClick={() => navigate("/user/profile")}
                   variant="outline"
                   className="w-full rounded-xl justify-start"
                 >
@@ -202,7 +216,11 @@ const UserDashboard = () => {
                     <p className="text-xs text-muted-foreground">{visit.date}</p>
                   </div>
                 ))}
-                <Button variant="ghost" className="w-full rounded-xl text-primary">
+                <Button 
+                  onClick={() => navigate("/user/history")}
+                  variant="ghost" 
+                  className="w-full rounded-xl text-primary"
+                >
                   View All History
                 </Button>
               </CardContent>
